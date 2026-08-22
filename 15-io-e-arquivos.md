@@ -3,6 +3,47 @@
 `java.nio.file` e as formas modernas de ler e escrever arquivo. Se você veio do
 `java.io` (`File`, `FileInputStream`), quase tudo mudou pra melhor.
 
+## Console: a classe `IO` (Java 25)
+
+O I/O de console ganhou a classe `java.lang.IO` no Java 25 (JEP 512), junto
+dos compact source files. São cinco métodos estáticos; como a classe mora em
+`java.lang`, funciona em qualquer programa sem import:
+
+| Método | O que faz |
+| ------ | --------- |
+| `IO.print(obj)` | Imprime sem quebra de linha |
+| `IO.println(obj)` | Imprime com quebra de linha |
+| `IO.println()` | Imprime só a quebra de linha |
+| `IO.readln(prompt)` | Imprime o prompt e lê uma linha do terminal |
+| `IO.readln()` | Lê uma linha do terminal sem prompt |
+
+Ler do terminal é input interativo, diferente dos argumentos de linha de
+comando (`String[] args`):
+
+```java
+void main() {
+    String name = IO.readln("Your name: ");
+    IO.println("Hello, " + name);
+}
+```
+
+Antes do Java 25, ler uma linha exigia montar `BufferedReader` +
+`InputStreamReader` e capturar `IOException`:
+
+```java
+try (BufferedReader reader = new BufferedReader(
+        new InputStreamReader(System.in))) {
+    String line = reader.readLine();
+    // ...
+} catch (IOException e) {
+    // ...
+}
+```
+
+O `readln` entrega o mesmo `readLine`, sem o boilerplate. A implementação do
+`IO` usa `System.out` e `System.in` por baixo. Pra arquivo, continue no
+`BufferedReader`; o `IO` é só console.
+
 ## `Path` e `Files`
 
 O `java.io.File` virou `java.nio.file.Path`, e as operações viraram métodos
@@ -246,6 +287,8 @@ o charset em código que lida com arquivo de texto.
 | Percorrer | `Files.walk` | diretório manual com `readdir` |
 | Caminho | `Path` imutável | `path` do Node (string) |
 | Binário | `InputStream` / `Files.copy` | `Buffer` |
+| Console (ler) | `IO.readln` (Java 25) | `readline` / `prompt` |
+| Console (imprimir) | `IO.println` (Java 25) | `console.log` |
 
 O `fs` do Node é assíncrono por padrão; o Java é síncrono por padrão. Se você
 precisa de concorrência, `virtual threads` (módulo 16) rodam I/O bloqueante
@@ -261,6 +304,7 @@ sem custo de thread.
 | `Path.of` | JDK 11 | Permanente |
 | `Files.mismatch` | JDK 12 | Permanente |
 | Filtros de desserialização (JEP 415) | JDK 17 | Permanente |
+| `java.lang.IO` (JEP 512) | JDK 25 | Permanente |
 
 ## Exercícios
 
@@ -282,6 +326,8 @@ sem custo de thread.
 - [File I/O (Featuring NIO.2) (Java Tutorials)](https://docs.oracle.com/javase/tutorial/essential/io/fileio.html) — `Path`, `Files` e as operações de arquivo em detalhe
 - [Path Operations (Java Tutorials)](https://docs.oracle.com/javase/tutorial/essential/io/pathOps.html) — `normalize`, `resolve`, `toRealPath`
 - [Class Files (Java API docs)](https://docs.oracle.com/en/java/javase/24/docs/api/java.base/java/nio/file/Files.html) — a referência completa dos métodos de `Files`
+- [JEP 512 — Compact Source Files and Instance Main Methods](https://openjdk.org/jeps/512) — introduz a classe `java.lang.IO` e o `readln` no Java 25
+- [Class IO (Java API docs)](https://docs.oracle.com/en/java/javase/25/docs/api/java.base/java/lang/IO.html) — os cinco métodos da classe `IO`
 - [I/O Streams (Java Tutorials)](https://docs.oracle.com/javase/tutorial/essential/io/streams.html) — streams de bytes e caracteres
 
 ## Próximo módulo
