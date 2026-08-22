@@ -31,6 +31,12 @@ Regras de arquivo:
 fica em `br/com/example/inventory/`. É o equivalente ao nome do módulo/pasta em TypeScript, mas com valor de namespace
 real.
 
+Nome composto de package é tudo junto, sem separador: `nomecomposto` vira
+`br.example.nomecomposto`, não `nome_composto` nem `nomeComposto`. Exemplos
+reais: `javax.swing`, `java.util.concurrent`, `org.springframework` (domínio
+invertido `org.springframework` + módulo). Exceção rara: parte que é
+palavra-chave do Java ganha `_` no final, como `com.example.continue_`.
+
 `import` traz tipos de outros packages. Duas formas:
 
 ```java
