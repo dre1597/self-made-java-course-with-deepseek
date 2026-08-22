@@ -16,6 +16,13 @@ ensinados; só como funcionam no Java). O curso assume que você já conhece o
 Java clássico e quer cobrir a linguagem de forma completa, do básico ao que
 chegou depois do Java 17.
 
+## Laboratório (`labs/`)
+
+A pasta `labs/` guarda o código reproduzido e testado durante o curso,
+separado por aula. Cada aula tem sua subpasta (`labs/class1/` pra aula 1,
+`labs/class2/` pra aula 2, e assim por diante). É o caderno de código do
+curso: exemplos reproduzidos, respostas de exercícios e experimentos soltos.
+
 ## Comparações com outras linguagens
 
 O curso compara Java com o que você já conhece. A referência principal é o

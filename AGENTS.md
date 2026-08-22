@@ -10,6 +10,7 @@ Siga o AGENTS.md global (~/.config/opencode/AGENTS.md) acima de tudo. Regras esp
 - Todo código dos exemplos é código de produção: nomes descritivos em variáveis, métodos, classes, parâmetros e arquivos. NUNCA comente o óbvio nem repita o nome do método no comentário. Comentário só quando explica o porquê que o código não conta
 - Boas práticas e convenções do Java (nomenclatura, imutabilidade, null-safety, foco em legibilidade) valem em TODO exemplo, mesmo nos didáticos
 - Se eu pedir "faça os testes", faça SÓ os testes. Se eu pedir "arruma X", arrume SÓ X
+- A pasta `labs/` guarda o código reproduzido e testado durante o curso, separado por aula (`labs/class1/`, `labs/class2/`...). Ao pedirem pra "jogar" um exemplo pra `labs/`, criar ou usar a subpasta da aula correspondente
 - Curso completo e geral: cada tópico da linguagem tem seu módulo, do básico ao avançado. Nada de pular tópico
 - NUNCA ensine conceito universal de programação (o que é constante, classe, herança, POO, loop). Esses conceitos o usuário já domina. Ensine como CADA UM funciona no Java: sintaxe, idioma, armadilhas, o que difere de outras linguagens
 - NUNCA faça suposição sobre o histórico do usuário (quando ele estudou, o que aprendeu, qual versão usou). Escreva pro público como "quem conhece programação, mas está revisitando Java de forma completa"
