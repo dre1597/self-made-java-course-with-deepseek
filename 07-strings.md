@@ -1,8 +1,7 @@
 # 07 — Strings e Text Blocks
 
-`String` no Java é imutável, tem um pool próprio e mais métodos do que você
-imagina. Este módulo cobre o que você usa todo dia, o que muda entre versões e
-os text blocks do JDK 15.
+`String` no Java é imutável, tem um pool próprio e mais métodos do que você imagina. Este módulo cobre o que você usa
+todo dia, o que muda entre versões e os text blocks do JDK 15.
 
 ## Imutabilidade
 
@@ -11,31 +10,35 @@ String name = "java";
 String upper = name.toUpperCase();   // name continua "java"
 ```
 
-`toUpperCase()` devolve uma **nova** String. `name` não muda. Toda operação
-sobre String cria outro objeto. Isso dá segurança (compartilhar sem medo de
-mutação) e custa memória quando você concatena em loop.
+`toUpperCase()` devolve uma **nova** String. `name` não muda. Toda operação sobre String cria outro objeto. Isso dá
+segurança (compartilhar sem medo de mutação) e custa memória quando você concatena em loop.
 
 ```java
 String result = "";
-for (int i = 0; i < 1000; i++) {
-    result += "x";   // cria 1000 Strings novas
-}
+for(
+int i = 0;
+i< 1000;i++){
+result +="x";   // cria 1000 Strings novas
+    }
 ```
 
-Pra concatenação repetida, `StringBuilder` (módulo de performance menciona o
-porquê):
+Pra concatenação repetida, `StringBuilder` (módulo de performance menciona o porquê):
 
 ```java
 StringBuilder builder = new StringBuilder();
-for (int i = 0; i < 1000; i++) {
-    builder.append("x");
+for(
+int i = 0;
+i< 1000;i++){
+    builder.
+
+append("x");
 }
 String result = builder.toString();
 ```
 
 Existe também o `StringBuffer`, quase idêntico porém thread-safe (métodos
-`synchronized`). A segurança custa performance e quase nunca é necessária
-(você não compartilha um buffer de montagem entre threads). O `StringBuilder`
+`synchronized`). A segurança custa performance e quase nunca é necessária (você não compartilha um buffer de montagem
+entre threads). O `StringBuilder`
 é o padrão; `StringBuffer` é legado.
 
 ## Pool de strings e interning
@@ -43,12 +46,12 @@ Existe também o `StringBuffer`, quase idêntico porém thread-safe (métodos
 ```java
 String a = "java";
 String b = "java";
-a == b;            // true, mesmo objeto no pool
+a ==b;            // true, mesmo objeto no pool
 ```
 
 Literais iguais apontam pro mesmo objeto no string pool. Já `new String("java")`
-força um objeto novo fora do pool. Comparar com `==` funciona só por acaso;
-compare com `.equals()`. A regra vale sempre: `==` compara referência,
+força um objeto novo fora do pool. Comparar com `==` funciona só por acaso; compare com `.equals()`. A regra vale
+sempre: `==` compara referência,
 `.equals()` compara conteúdo.
 
 ## Métodos que você usa todo dia
@@ -56,35 +59,63 @@ compare com `.equals()`. A regra vale sempre: `==` compara referência,
 ```java
 String email = "maria@example.com";
 
-email.equals("maria@example.com");     // igualdade de conteúdo
-email.equalsIgnoreCase("MARIA@example.com");
-email.length();                        // 18
-email.isBlank();                       // true só se vazio ou só espaços
-email.isEmpty();                       // true só se ""
-email.startsWith("maria");
-email.endsWith(".com");
-email.contains("@");
-email.indexOf("@");                    // 5, -1 se não achar
-email.substring(0, 5);                 // "maria"
-email.replace("maria", "joao");
-email.strip();                         // remove espaços nas pontas
-email.toLowerCase();
-email.chars();                         // IntStream dos code points
+email.
+
+equals("maria@example.com");     // igualdade de conteúdo
+email.
+
+equalsIgnoreCase("MARIA@example.com");
+email.
+
+length();                        // 18
+email.
+
+isBlank();                       // true só se vazio ou só espaços
+email.
+
+isEmpty();                       // true só se ""
+email.
+
+startsWith("maria");
+email.
+
+endsWith(".com");
+email.
+
+contains("@");
+email.
+
+indexOf("@");                    // 5, -1 se não achar
+email.
+
+substring(0,5);                 // "maria"
+email.
+
+replace("maria","joao");
+email.
+
+strip();                         // remove espaços nas pontas
+email.
+
+toLowerCase();
+email.
+
+chars();                         // IntStream dos code points
 ```
 
 `isBlank()` (JDK 11) cobre espaço em branco; `isEmpty()` só aceita `""`.
-`strip()` (JDK 11) corta espaços Unicode, enquanto `trim()` (JDK 1) só corta
-caracteres até 0x20. Prefira `strip()`.
+`strip()` (JDK 11) corta espaços Unicode, enquanto `trim()` (JDK 1) só corta caracteres até 0x20. Prefira `strip()`.
 
 ### Cuidado com codepoints e emoji
 
-O `String` é uma sequência de unidades UTF-16. `length()` e `charAt()` contam
-**unidades de 16 bits**, não caracteres visíveis. Um emoji (ou caractere
-raro) ocupa duas unidades:
+O `String` é uma sequência de unidades UTF-16. `length()` e `charAt()` contam **unidades de 16 bits**, não caracteres
+visíveis. Um emoji (ou caractere raro) ocupa duas unidades:
 
 ```java
 String emoji = "🙂";
-emoji.length();       // 2, não 1
+emoji.
+
+length();       // 2, não 1
 ```
 
 `codePoints()` percorre os caracteres de verdade:
@@ -105,8 +136,7 @@ String message = String.format("Pedido %d no total de R$ %.2f", 42, 199.90);
 String greeting = "Olá, %s! Você tem %d tarefas pendentes.".formatted("Maria", 3);
 ```
 
-`formatted()` é o atalho de instância do `String.format` (JDK 15). Mesmo
-comportamento, menos cerimônia.
+`formatted()` é o atalho de instância do `String.format` (JDK 15). Mesmo comportamento, menos cerimônia.
 
 ## Split e join
 
@@ -117,11 +147,11 @@ String[] parts = csv.split(",");       // ["java", "streams", "records"]
 String joined = String.join("-", parts);   // "java-streams-records"
 ```
 
-`split` recebe **regex**. `csv.split(".")` não divide em nada (`.` é curinga);
-use `csv.split("\\.")`. Erro clássico.
+`split` recebe **regex**. `csv.split(".")` não divide em nada (`.` é curinga); use `csv.split("\\.")`. Erro clássico.
 
-Juntar uma coleção inteira? `String.join` aceita um `Iterable`, e no meio de
-um stream o `Collectors.joining` (módulo 13) faz o mesmo:
+Juntar uma coleção inteira? `String.join` aceita um `Iterable`, e no meio de um stream o `Collectors.joining` (módulo
+
+13) faz o mesmo:
 
 ```java
 String joined = String.join(", ", names);          // Iterable
@@ -134,38 +164,36 @@ Texto multilinha sem `\n` manual nem escape de aspas:
 
 ```java
 String sql = """
-        SELECT id, name, email
-        FROM users
-        WHERE status = 'ACTIVE'
-        ORDER BY name
-        """;
+    SELECT id, name, email
+    FROM users
+    WHERE status = 'ACTIVE'
+    ORDER BY name
+    """;
 
 String html = """
-        <div class="alert">
-          <p>%s</p>
-        </div>
-        """.formatted(message);
+    <div class="alert">
+      <p>%s</p>
+    </div>
+    """.formatted(message);
 ```
 
 Regras:
 
 - Abre e fecha com três aspas. O conteúdo começa na linha seguinte.
-- A indentação mínima comum é removida automaticamente. No exemplo, o bloco
-  alinha com a posição das aspas de fechamento.
-- Não interpolam. Pra valor dentro do texto, `formatted()` ou `String.format`.
-  É a diferença do template literal do TS, que interpola com `${}`.
-- Escape de aspas vira desnecessário: `"""` fecha o bloco, aspas simples e
-  duplas no meio do texto são literais.
+- A indentação mínima comum é removida automaticamente. No exemplo, o bloco alinha com a posição das aspas de
+  fechamento.
+- Não interpolam. Pra valor dentro do texto, `formatted()` ou `String.format`. É a diferença do template literal do TS,
+  que interpola com `${}`.
+- Escape de aspas vira desnecessário: `"""` fecha o bloco, aspas simples e duplas no meio do texto são literais.
 
 O exemplo de SQL acima é o uso mais comum de text block.
 
 Dois métodos-irmãos do text block que aparecem quando você lê/gera texto:
 
-- `stripIndent()`: remove a indentação incidental, o mesmo algoritmo que o
-  compilador usa nos text blocks. Útil pra texto vindo de arquivo.
-- `translateEscapes()`: interpreta escapes (`\n`, `\t`, `\"`...) como o
-  compilador faria. Útil quando o texto chega de fonte externa com escapes
-  literais.
+- `stripIndent()`: remove a indentação incidental, o mesmo algoritmo que o compilador usa nos text blocks. Útil pra
+  texto vindo de arquivo.
+- `translateEscapes()`: interpreta escapes (`\n`, `\t`, `\"`...) como o compilador faria. Útil quando o texto chega de
+  fonte externa com escapes literais.
 
 ```java
 String raw = "linha1\\nlinha2";          // \n literal (2 caracteres)
@@ -183,53 +211,163 @@ boolean flag = Boolean.parseBoolean("true");
 String text = String.valueOf(42);
 ```
 
-`Integer.parseInt("abc")` lança `NumberFormatException`. Se o texto pode vir
-sujo, trate antes de converter.
+`Integer.parseInt("abc")` lança `NumberFormatException`. Se o texto pode vir sujo, trate antes de converter.
 
 ## Comparação com TypeScript
 
-| Operação | Java | TypeScript |
-| -------- | ---- | ---------- |
-| Igualdade | `.equals()` | `===` |
-| Multilinha | text block (JDK 15) | template literal com backtick |
-| Interpolação | `formatted()` | `${var}` |
-| Imutável | sim | primitivo, string também imutável |
-| Pool | string pool + interning | interning não exposto |
+| Operação     | Java                    | TypeScript                        |
+|--------------|-------------------------|-----------------------------------|
+| Igualdade    | `.equals()`             | `===`                             |
+| Multilinha   | text block (JDK 15)     | template literal com backtick     |
+| Interpolação | `formatted()`           | `${var}`                          |
+| Imutável     | sim                     | primitivo, string também imutável |
+| Pool         | string pool + interning | interning não exposto             |
 
-O ponto que mais confunde quem vem do TS: no TS `${x}` funciona dentro de
-template literal, no Java você precisa de `.formatted(x)`.
+O ponto que mais confunde quem vem do TS: no TS `${x}` funciona dentro de template literal, no Java você precisa de
+`.formatted(x)`.
 
 ## O que mudou entre versões
 
-| Feature | Versão | Situação |
-| ------- | ------ | -------- |
+| Feature            | Versão | Situação   |
+|--------------------|--------|------------|
 | `isBlank`, `strip` | JDK 11 | Permanente |
-| `formatted()` | JDK 15 | Permanente |
-| Text blocks | JDK 15 | Permanente |
+| `formatted()`      | JDK 15 | Permanente |
+| Text blocks        | JDK 15 | Permanente |
 
 ## Exercícios
 
-1. Escreva `capitalize(String text)` que deixa a primeira letra maiúscula e o
-   resto minúscula. Teste com `null`, string vazia, "OLA MUNDO" e "java".
-2. Escreva `maskEmail(String email)` que esconde o meio: `maria@exemplo.com`
-   vira `ma***@exemplo.com`. Teste com email curto (`a@b.c`) e sem `@`.
-3. Escreva `countWords(String text)` que conta palavras separando por espaços.
-   Teste com texto com múltiplos espaços seguidos, com `\t` e com string vazia.
-   Depois reescreva usando `split` com `\\s+` e compare os resultados.
-4. Escreva um método que recebe um trecho de HTML com text block e substitui
-   o placeholder `%s` por um nome usando `formatted()`. Teste com nome que
-   contém `%` (o que acontece? Por quê?).
+1. Escreva `capitalize(String text)` que deixa a primeira letra maiúscula e o resto minúscula. Esperado: `null` →
+   `null`; `""` → `""`;
+   `"OLA MUNDO"` → `"Ola mundo"`; `"java"` → `"Java"`.
+
+```java
+void main() {
+  IO.println(Capitalize.execute(null));
+  IO.println(Capitalize.execute(""));
+  IO.println(Capitalize.execute("OLA MUNDO"));
+  IO.println(Capitalize.execute("java"));
+  IO.println(Capitalize.execute("j"));
+}
+
+static class Capitalize {
+  private Capitalize() {
+  }
+
+  public static String execute(String text) {
+    if (text == null) {
+      return null;
+    }
+
+    if (text.isBlank()) {
+      return "";
+    }
+
+    return text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
+  }
+}
+```
+
+2. Escreva `maskEmail(String email)` que mantém as duas primeiras letras antes do `@`, troca o resto por `***` e
+   preserva o domínio. Esperado:
+   `"maria@exemplo.com"` → `"ma***@exemplo.com"`; `"a@b.c"` → `"a***@b.c"`; email sem `@` → o próprio email; `null` →
+   `null`.
+
+```java
+void main() {
+  IO.println(MaskMail.execute("john.doe@example.com"));
+  IO.println(MaskMail.execute("a@b.com"));
+  IO.println(MaskMail.execute(""));
+  IO.println(MaskMail.execute(null));
+}
+
+static class MaskMail {
+  private MaskMail() {
+  }
+
+  public static String execute(String email) {
+    if (email == null) {
+      return null;
+    }
+
+    if (email.isBlank()) {
+      return "";
+    }
+
+    var username = email.substring(0, email.indexOf('@'));
+    var domain = email.substring(email.indexOf('@'));
+
+    var maskedUsername = username.substring(0, Math.min(2, username.length())) + "***";
+
+    return maskedUsername + domain;
+  }
+}
+
+```
+
+3. Escreva `countWords(String text)` que conta palavras separadas por whitespace (espaços, `\t` etc.) usando
+   `split("\\s+")`. Esperado:
+   `"um dois"` → `2`; `"um  dois  tres"` (espaços múltiplos) → `3`;
+   `"a\tb"` → `2`; `""` → `0` (atenção: `"".split("\\s+")` devolve `[""]`, um array com 1 elemento — trate esse caso);
+   `null` → `0`.
+
+```java
+void main() {
+  IO.println(CountWords.execute("I need a phrase here"));
+  IO.println(CountWords.execute("word"));
+  IO.println(CountWords.execute("  "));
+  IO.println(CountWords.execute(""));
+  IO.println(CountWords.execute(null));
+}
+
+static class CountWords {
+  private CountWords() {
+  }
+
+  public static int execute(String text) {
+    if (text == null || text.isBlank()) {
+      return 0;
+    }
+    return text.split("\\s+").length;
+  }
+}
+```
+
+4. Escreva `renderGreeting(String name)` que monta um text block de HTML com o placeholder `%s` e usa `formatted(name)`
+   pra substituir. Esperado:
+   `renderGreeting("Ana")` → `"<h1>Olá, Ana!</h1>"`. Teste também com
+   `"100%"` — repare que o `%` no **argumento** não quebra nada; só o `%` no **texto do template** é interpretado como
+   conversão.
+
+```java
+void main() {
+  IO.println(RenderGreeting.execute("Ana"));
+  IO.println(RenderGreeting.execute("100%"));
+}
+
+static class RenderGreeting {
+  private RenderGreeting() {
+  }
+
+  public static String execute(String name) {
+    return """
+        <h1>Olá,%s + "!</h1>
+        """.formatted(name);
+  }
+}
+```
 
 ## Referências
 
-- [Class String (Java API docs)](https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/String.html) — a referência completa dos métodos de `String`
-- [Programmer's Guide to Text Blocks (OpenJDK)](https://openjdk.org/projects/amber/guides/text-blocks-guide) — guia prático de text blocks, indentação e estilos
+- [Class String (Java API docs)](https://docs.oracle.com/en/java/javase/26/docs/api/java.base/java/lang/String.html) — a
+  referência completa dos métodos de `String`
+- [Programmer's Guide to Text Blocks (OpenJDK)](https://openjdk.org/projects/amber/guides/text-blocks-guide) — guia
+  prático de text blocks, indentação e estilos
 - [JEP 378 — Text Blocks](https://openjdk.org/jeps/378) — o JEP que adicionou os text blocks no JDK 15
-- [Text Blocks (Java Language Updates)](https://docs.oracle.com/en/java/javase/26/language/text-blocks.html) — a doc oficial com `stripIndent` e `translateEscapes`
+- [Text Blocks (Java Language Updates)](https://docs.oracle.com/en/java/javase/26/language/text-blocks.html) — a doc
+  oficial com `stripIndent` e `translateEscapes`
 
 ## Próximo módulo
 
-**Arrays e Coleções** — arrays, `List`, `Set`, `Map`, implementações e as
-factories imutáveis do JDK 9.
+**Arrays e Coleções** — arrays, `List`, `Set`, `Map`, implementações e as factories imutáveis do JDK 9.
 
 [→ 08 — Arrays e Coleções](./08-arrays-e-colecoes.md)
