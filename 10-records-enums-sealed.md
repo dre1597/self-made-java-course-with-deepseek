@@ -287,19 +287,19 @@ esquecer some.
 
 ## Exercícios
 
-1. Converta uma classe `User` com getters/setters e `equals`/`hashCode`
-   manuais pra um `record`. Liste o que o record gera e o que você perde
-   (mutabilidade, por exemplo).
-2. Crie um `record Transaction(String id, BigDecimal amount, TransactionType type)`
-   com um `enum TransactionType { INCOME, EXPENSE }`. Valide no compact
-   constructor que `amount` é positivo e que `id` não é vazio. Teste com
-   valores inválidos.
-3. Crie um `sealed interface Notification` com `Email`, `Sms` e `Push`. Escreva
-   um `switch` exaustivo que devolve a mensagem de cada um. Depois adicione um
-   quarto tipo `WhatsApp` e observe o erro do compilador. O que o erro diz?
-4. Escreva um `enum CardSuit { HEARTS, DIAMONDS, CLUBS, SPADES }` e um método
-   que devolve o emoji (♠♥♦♣) por naipe. Teste o caso de `valueOf` com nome
-   que não existe (o que lança?) e o switch cobrindo os quatro naipes.
+1. Crie `record Transaction(String id, BigDecimal amount, TransactionType type)`
+   com `enum TransactionType { INCOME, EXPENSE }`. Valide no compact
+   constructor que `amount` é positivo e que `id` não é vazio. Confira que
+   valores inválidos lançam `IllegalArgumentException`.
+2. Crie `sealed interface Notification` com os records `Email`, `Sms` e
+   `Push` (cada um com o campo que fizer sentido, ex.: `Email(String to)`).
+   Escreva um `switch` exaustivo que devolve a mensagem de cada um. Depois
+   adicione um quarto tipo `WhatsApp` e repare no erro do compilador
+   cobrando o novo case.
+3. Escreva `enum CardSuit { HEARTS, DIAMONDS, CLUBS, SPADES }` e um método
+   `emoji()` que devolve ♥♦♣♠ por naipe. Teste o `switch` cobrindo os quatro
+   naipes e confira o tipo exato da exceção de
+   `CardSuit.valueOf("NOPE")`.
 
 ## Referências
 
