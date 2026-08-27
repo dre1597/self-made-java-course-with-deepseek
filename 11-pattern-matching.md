@@ -46,12 +46,14 @@ String describe(Object value) {
 }
 ```
 
-O selector agora aceita **qualquer tipo de referência**. Antes (JDK 7) eram só
-`byte`, `short`, `char`, `int`, `String` e `enum`.
+O selector agora aceita **qualquer tipo de referência**. Antes, só os tipos
+legados: `byte`, `short`, `char`, `int` (e os wrappers), `enum` (ambos desde o
+JDK 5) e `String` (JDK 7).
 
-Exigência: um `switch` de patterns precisa ser **exaustivo**. Com `default`
-ou com uma sealed hierarchy completa (módulo 10), você cobre tudo. Sem uma das
-duas, não compila.
+Exigência: switch com patterns precisa ser **exaustivo** — cobrir todos os
+valores possíveis do selector. Você garante isso com `default` ou cobrindo
+todos os subtipos de uma sealed hierarchy (módulo 10). Sem uma das duas, não
+compila.
 
 ## Guardas com `when`
 
@@ -118,13 +120,6 @@ if (obj instanceof User(var name, Address(var street, var city, var zip))) {
 componente muda. Em `switch`, a inferência vale pra record patterns genéricos
 também.
 
-### Record patterns fora do `for`
-
-No preview (JDK 19/20) dava pra usar record pattern no enhanced `for`; o JDK 21
-**removeu** isso antes de finalizar (JEP 440). Código que tentar
-`for (User(var name, ...) : users)` não compila no Java 21+. Se você viu isso
-em tutorial antigo, desconfie da versão.
-
 ### Records, sealed e exaustividade juntos
 
 O destructuring combina com sealed: um switch que cobre os subtipos de um
@@ -174,16 +169,19 @@ String describe(Object value) {
 }
 ```
 
-Antes, `null` no selector estourava NPE. Agora `case null` é explícito.
+Antes, `null` no selector estourava NPE. Continua estourando se não houver
+`case null` — e o `default` **não** captura null: sem `case null`, switchar
+`null` é exceção.
 
 ## Armadilhas
 
 - **Pattern de tipo não aceita primitivo**: `case int i ->` não compila.
   Use o wrapper `Integer` (primitivos em patterns são preview no JDK 25,
   JEP 507, ainda não permanente).
-- **`when` não é `if` de escape**: se nenhum case casa (guarda falha em
-  todos), o `default` roda. Exaustividade conta guardas como cobertura
-  parcial.
+- **Guarda não garante exaustividade**: um case com `when` não cobre o tipo —
+  a guarda pode falhar em runtime. Se o único case de um tipo tem guarda, o
+  switch ainda precisa de `default` (ou de outro case sem guarda) pra compilar
+  como exaustivo.
 - **Dominância**: um pattern que é subconjunto de outro precisa vir depois.
   `case Object o` antes de `case String s` é erro de compilação.
 
@@ -213,20 +211,25 @@ te força a cobrir todos os casos de um sealed ou a incluir `default`.
 
 ## Exercícios
 
-1. Escreva `lengthOf(Object value)` que devolve o tamanho se for `String`,
-   `List` ou `Map`, e `-1` caso contrário. Teste com `null` e com tipos
-   inesperados (`Integer`, por exemplo).
-2. Escreva um `switch` com guardas que classifica um `Integer`: "negativo",
-   "zero", "pequeno" (1 a 100), "grande" (acima). Teste a ordem dos cases:
-   o que acontece se o case genérico vier antes dos específicos?
-3. Crie um `record Order(String id, BigDecimal total, OrderStatus status)` e
-   um `switch` que devolve a descrição usando record pattern que destrutura
-   `id` e `status`. Depois aninhe um record `Customer` dentro de `Order` e
-   destrutura os dois níveis.
-4. Escreva uma `sealed interface Expression` com `Constant(int value)` e
+1. Escreva `lengthOf(Object value)` que devolve o tamanho se for `String`
+   (`.length()`), `List` ou `Map` (`.size()`), e `-1` caso contrário —
+   incluindo `null`. Esperado: `"abc"` → `3`; `List.of(1, 2)` → `2`;
+   `null` → `-1`; `42` → `-1`.
+2. Escreva um `switch` com guardas que classifica um `Integer`:
+   `"negativo"` (< 0), `"zero"` (== 0), `"pequeno"` (1 a 100), `"grande"`
+   (> 100). Esperado: `-5` → `"negativo"`; `0` → `"zero"`; `50` → `"pequeno"`;
+   `200` → `"grande"`. Depois troque a ordem pra pôr um case sem guarda antes
+   dos específicos e repare no erro de dominância do compilador.
+3. Crie `record Order(String id, BigDecimal total, OrderStatus status)` com
+   `enum OrderStatus { PENDING, PAID, CANCELLED }`. Escreva um `switch` com
+   record pattern que destrutura `id` e `status` e devolve
+   `"<id> — <status>"` (ex.: `"A-1 — PENDING"`). Depois aninhe um
+   `record Customer(String name)` como campo do `Order` e destrutura os dois
+   níveis no mesmo pattern.
+4. Escreva `sealed interface Expression` com `Constant(int value)` e
    `Sum(Expression left, Expression right)`. Implemente `evaluate()` com
-   `switch` exaustivo e record patterns recursivos. Teste `Sum(Constant(2),
-   Sum(Constant(3), Constant(4)))`.
+   `switch` exaustivo e record patterns recursivos. Esperado:
+   `evaluate(Sum(Constant(2), Sum(Constant(3), Constant(4))))` → `9`.
 
 ## Referências
 
