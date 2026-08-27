@@ -50,6 +50,27 @@ o uso comum.
 
 Dois packages sempre disponíveis sem import: `java.lang` e o package do próprio arquivo.
 
+### Compact source files importam o `java.base` inteiro
+
+Num arquivo normal (com `class` no topo), só `java.lang` é implícito. Num
+**compact source file** — o arquivo "script" sem classe, com `void main()`
+solta no topo (JEP 512, Java 25) — vale mais: é como se tivesse
+`import module java.base;` no início. Todos os tipos públicos dos packages
+exportados pelo `java.base` ficam disponíveis sem import: `java.util` (`List`,
+`Map`, `ArrayList`), `java.math` (`BigDecimal`), `java.time`, `java.nio`
+(`Path`, `Files`), `java.net` etc.
+
+```java
+void main() {                        // compact source file
+  List<String> names = new ArrayList<>();
+  IO.println(BigDecimal.ONE);
+}
+```
+
+Isso vale **só** pra arquivo compacto. Assim que você declara uma `class`
+explícita no topo, o `java.base` automático some e os `import java.util.*;`
+voltam a ser obrigatórios.
+
 ### `import static`
 
 Importa membros **estáticos** (métodos e constantes), não tipos:
