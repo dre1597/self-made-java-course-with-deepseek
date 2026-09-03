@@ -14,7 +14,7 @@ A dependência no Gradle (detalhe no módulo 22):
 
 ```kotlin
 dependencies {
-    implementation("org.postgresql:postgresql:42.7.5")
+    implementation("org.postgresql:postgresql:42.7.11")
 }
 ```
 
@@ -40,8 +40,23 @@ A URL JDBC tem formato `jdbc:banco:host:porta/banco`. Cada banco tem o seu.
 
 ### Connection pool (HikariCP)
 
-Criar conexão é caro. Em aplicação real você não cria conexão por requisição;
-usa um **pool**. O HikariCP é o padrão de mercado:
+Criar conexão é caro: abre socket, autentica e o banco prepara uma sessão.
+Fazer isso a cada requisição derruba qualquer servidor. A solução é o
+**connection pool**: um punhado de conexões abertas que a aplicação empresta
+e devolve.
+
+O **HikariCP** é a biblioteca de pool mais usada do ecossistema Java — é o
+pool padrão do Spring Boot. Ele implementa a interface `javax.sql.DataSource`
+(o jeito padrão do JDBC de obter conexão) e por cima faz o pooling: mantém as
+conexões abertas, empresta no `getConnection()` e devolve no `close()`. O
+`close()` do try-with-resources não fecha a conexão de verdade; devolve pro
+pool.
+
+A dependência:
+
+```kotlin
+implementation("com.zaxxer:HikariCP:7.1.0")
+```
 
 ```java
 HikariConfig config = new HikariConfig();
@@ -59,9 +74,12 @@ try (Connection conn = dataSource.getConnection()) {
 }
 ```
 
-O pool mantém conexões abertas e as empresta. `getConnection()` do pool não
-cria conexão nova; pega uma pronta. Isso é o que um servidor web usa embaixo
-de qualquer framework.
+Crie um `HikariDataSource` por aplicação (uma instância só, guardada num
+singleton ou no container de injeção) e passe pra quem precisa. Se o pool
+esgota, `getConnection()` bloqueia até `connectionTimeout` (default 30s) e
+então falha. Tamanho do pool importa menos do que parece: pra I/O de banco, o
+dimensionamento ideal costuma ficar perto de `núcleos × 2 + discos` (a wiki do
+HikariCP tem o cálculo). Pool gigante não acelera nada, só lota o banco.
 
 ## `PreparedStatement`
 
@@ -364,11 +382,11 @@ separado do SQL, sem concatenação.
 ## Exercícios
 
 1. Escreva um `UserRepository` com `findById(long id)` e `findAll()` usando
-   JDBC e mapeando pra `record User`. Teste com usuário inexistente (o que
-   `findById` devolve?).
+   JDBC e mapeando pra `record User`. Faça `findById` devolver
+   `Optional<User>`. Esperado: usuário inexistente → `Optional.empty()`.
 2. Escreva `save(User)` que insere com `RETURN_GENERATED_KEYS` e devolve o
-   `User` com o id preenchido. Teste inserindo dois usuários iguais (o que a
-   constraint única faz?).
+   `User` com o id preenchido. Esperado: inserir dois usuários com o mesmo
+   email (coluna `UNIQUE`) lança `SQLException` de violação de constraint.
 3. Escreva `transfer(conn, fromId, toId, amount)` que move saldo entre duas
    contas numa transação com `setAutoCommit(false)`, `commit` e `rollback`.
    Teste o caso de saldo insuficiente (a transferência deve desfazer tudo).
