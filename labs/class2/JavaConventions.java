@@ -1,6 +1,6 @@
 package br.com.example;
 
-public class OrderHandler {
+class OrderHandler {
   int maxItems = 10;
 
   void process() {

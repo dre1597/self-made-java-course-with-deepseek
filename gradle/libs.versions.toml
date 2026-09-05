@@ -1,5 +1,0 @@
-[versions]
-sqliteJdbc = "3.53.4.0"
-
-[libraries]
-sqlite-jdbc = { module = "org.xerial:sqlite-jdbc", version.ref = "sqliteJdbc" }

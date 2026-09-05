@@ -4,12 +4,12 @@ void main() {
   IO.println(CalculateRemainder.execute(10, -30));
   IO.println(CalculateRemainder.execute(-10, 30));
 //  IO.println(CalculateRemainder.execute(10, 0));
-  IO.println(CalculateRemainder.execute(CalculateRemainder.execute(Integer.MIN_VALUE, -1));
-  IO.println(CalculateRemainder.execute(CalculateRemainder.execute(Integer.MAX_VALUE , -1));
+  IO.println(CalculateRemainder.execute(Integer.MIN_VALUE, -1));
+  IO.println(CalculateRemainder.execute(Integer.MAX_VALUE, -1));
   IO.println(CalculateRemainder.execute(10, -1));
 }
 
-class CalculateRemainder {
+static class CalculateRemainder {
   private CalculateRemainder() {
   }
 
